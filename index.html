@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MelonMC | Store</title>
+  <meta name="description" content="MelonMC Minecraft Store - Ranks, Kits & Cosmetics">
+  <link rel="icon" href="logo.png" type="image/png">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    :root {
+      --bg: #0d0f0c;
+      --card: #151814;
+      --card-hover: #1c2119;
+      --green: #8BC34A;
+      --green-bright: #a8e063;
+      --green-dark: #5a8f2f;
+      --red: #e53935;
+      --text: #e8ede4;
+      --muted: #8a9580;
+      --border: #2a3226;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Outfit', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    /* Header */
+    .header {
+      position: relative;
+      background: linear-gradient(180deg, #1a2e12 0%, var(--bg) 100%);
+      padding: 0 0 50px;
+      overflow: hidden;
+    }
+    .header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(139,195,74,0.15) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 18px 24px;
+      position: relative;
+      z-index: 10;
+    }
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 800;
+      font-size: 1.4rem;
+    }
+    .nav-logo img { height: 48px; width: auto; }
+    .nav-links {
+      display: flex;
+      gap: 8px;
+      list-style: none;
+    }
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    .nav-links a:hover, .nav-links a.active {
+      color: var(--green-bright);
+      background: rgba(139,195,74,0.12);
+    }
+    .nav-cta {
+      background: var(--green);
+      color: #0d0f0c !important;
+      font-weight: 700 !important;
+    }
+    .nav-cta:hover { background: var(--green-bright) !important; color: #0d0f0c !important; }
+
+    .hero {
+      text-align: center;
+      padding: 40px 24px 20px;
+      position: relative;
+      z-index: 5;
+    }
+    .hero-logo {
+      width: 220px;
+      max-width: 70vw;
+      margin: 0 auto 24px;
+      filter: drop-shadow(0 0 40px rgba(139,195,74,0.45));
+      animation: float 4s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    .hero h1 {
+      font-size: clamp(1.8rem, 5vw, 2.8rem);
+      font-weight: 800;
+      margin-bottom: 10px;
+      background: linear-gradient(90deg, var(--green-bright), #fff, var(--green));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero p {
+      color: var(--muted);
+      font-size: 1.1rem;
+      max-width: 480px;
+      margin: 0 auto 28px;
+    }
+
+    .server-bar {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    .server-pill {
+      background: rgba(0,0,0,0.45);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 22px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      transition: all 0.25s;
+      min-width: 200px;
+    }
+    .server-pill:hover {
+      border-color: var(--green);
+      background: rgba(139,195,74,0.1);
+      box-shadow: 0 0 24px rgba(139,195,74,0.2);
+    }
+    .server-pill i {
+      font-size: 1.5rem;
+      color: var(--green);
+    }
+    .server-pill .info strong {
+      display: block;
+      font-size: 1.05rem;
+    }
+    .server-pill .info span {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    /* Main content */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 32px;
+    }
+    @media (max-width: 900px) {
+      .container { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+    }
+
+    .section-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--green-bright);
+    }
+    .section-title i { font-size: 1rem; }
+
+    .packages {
+      display: grid;
+      gap: 14px;
+    }
+    .package {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      transition: all 0.25s;
+      cursor: pointer;
+    }
+    .package:hover {
+      border-color: var(--green);
+      background: var(--card-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+    .pkg-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 12px;
+      background: rgba(139,195,74,0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+    .pkg-info { flex: 1; min-width: 0; }
+    .pkg-info h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+    .pkg-info p {
+      font-size: 0.85rem;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .pkg-price {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--green-bright);
+      white-space: nowrap;
+    }
+    .pkg-btn {
+      background: var(--green);
+      color: #0d0f0c;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .pkg-btn:hover {
+      background: var(--green-bright);
+      box-shadow: 0 0 16px rgba(139,195,74,0.4);
+    }
+
+    /* Sidebar */
+    .sidebar { display: flex; flex-direction: column; gap: 20px; }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+    .card-header {
+      padding: 14px 18px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(90deg, rgba(139,195,74,0.12), transparent);
+      color: var(--green-bright);
+    }
+    .card-body { padding: 18px; }
+
+    .status-online {
+      text-align: center;
+    }
+    .status-online .count {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--green-bright);
+    }
+    .status-online .label {
+      color: var(--green);
+      font-size: 0.9rem;
+      margin: 4px 0 8px;
+    }
+    .status-online .ip {
+      font-size: 0.85rem;
+      color: var(--muted);
+      background: rgba(0,0,0,0.3);
+      padding: 6px 12px;
+      border-radius: 6px;
+      display: inline-block;
+      cursor: pointer;
+    }
+    .status-online .ip:hover { color: var(--green-bright); }
+
+    .donator {
+      text-align: center;
+    }
+    .donator .crown { font-size: 2.2rem; margin-bottom: 8px; }
+    .donator .name { font-weight: 700; font-size: 1.1rem; }
+    .donator .amount { color: var(--green); font-size: 0.9rem; margin-top: 2px; }
+
+    .recent-list { list-style: none; }
+    .recent-list li {
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.9rem;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .recent-list li:last-child { border-bottom: none; }
+    .recent-list .who { color: var(--text); }
+    .recent-list .what { color: var(--muted); font-size: 0.85rem; }
+
+    /* Footer */
+    .footer {
+      background: #0a0c09;
+      border-top: 1px solid var(--border);
+      padding: 40px 24px 30px;
+      text-align: center;
+    }
+    .footer img {
+      height: 70px;
+      margin-bottom: 16px;
+      opacity: 0.9;
+    }
+    .footer-social {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+    .footer-social a {
+      color: var(--muted);
+      font-size: 1.3rem;
+      transition: color 0.2s;
+    }
+    .footer-social a:hover { color: var(--green); }
+    .footer-copy {
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+    .footer-copy strong { color: var(--green); }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--green);
+      color: #0d0f0c;
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-weight: 700;
+      opacity: 0;
+      transition: all 0.3s;
+      z-index: 100;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* Mobile menu */
+    .menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--text);
+      font-size: 1.4rem;
+      cursor: pointer;
+    }
+    @media (max-width: 900px) {
+      .menu-btn { display: block; }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <nav class="nav">
+      <a href="/" class="nav-logo">
+        <img src="logo.png" alt="MelonMC">
+        <span>MelonMC</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#" class="active">Store</a></li>
+        <li><a href="#">Ranks</a></li>
+        <li><a href="#">Kits</a></li>
+        <li><a href="#">Vote</a></li>
+        <li><a href="#" class="nav-cta">Discord</a></li>
+      </ul>
+      <button class="menu-btn" onclick="alert('Menu')"><i class="fas fa-bars"></i></button>
+    </nav>
+
+    <div class="hero">
+      <img src="logo.png" alt="MelonMC" class="hero-logo">
+      <h1>Welcome to MelonMC</h1>
+      <p>Ranks, kits & cosmetics for the best Factions / SMP experience</p>
+
+      <div class="server-bar">
+        <div class="server-pill" onclick="copyIP()">
+          <i class="fas fa-cube"></i>
+          <div class="info">
+            <strong id="player-count">42 Online</strong>
+            <span>play.melon-mc.net</span>
+          </div>
+        </div>
+        <div class="server-pill" onclick="window.open('https://discord.gg', '_blank')">
+          <i class="fab fa-discord"></i>
+          <div class="info">
+            <strong>Join Discord</strong>
+            <span>Chat with the community</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <main>
+      <div class="section-title"><i class="fas fa-star"></i> Featured Packages</div>
+      <div class="packages">
+        <div class="package">
+          <div class="pkg-icon">🍉</div>
+          <div class="pkg-info">
+            <h3>Melon Rank</h3>
+            <p>VIP perks, exclusive kits, priority queue & more</p>
+          </div>
+          <div class="pkg-price">$9.99</div>
+          <button class="pkg-btn" onclick="buy('Melon Rank')">Buy</button>
+        </div>
+        <div class="package">
+          <div class="pkg-icon">💎</div>
+          <div class="pkg-info">
+            <h3>Diamond Bundle</h3>
+            <p>Best value – ranks + cosmetics + keys</p>
+          </div>
+          <div class="pkg-price">$24.99</div>
+          <button class="pkg-btn" onclick="buy('Diamond Bundle')">Buy</button>
+        </div>
+        <div class="package">
+          <div class="pkg-icon">⚔️</div>
+          <div class="pkg-info">
+            <h3>Warrior Kit</h3>
+            <p>Powerful starter gear & weapons</p>
+          </div>
+          <div class="pkg-price">$4.99</div>
+          <button class="pkg-btn" onclick="buy('Warrior Kit')">Buy</button>
+        </div>
+        <div class="package">
+          <div class="pkg-icon">👑</div>
+          <div class="pkg-info">
+            <h3>King Rank</h3>
+            <p>Highest tier – all perks unlocked</p>
+          </div>
+          <div class="pkg-price">$39.99</div>
+          <button class="pkg-btn" onclick="buy('King Rank')">Buy</button>
+        </div>
+        <div class="package">
+          <div class="pkg-icon">🔑</div>
+          <div class="pkg-info">
+            <h3>Crate Keys (x10)</h3>
+            <p>Open crates for rare rewards</p>
+          </div>
+          <div class="pkg-price">$7.99</div>
+          <button class="pkg-btn" onclick="buy('Crate Keys')">Buy</button>
+        </div>
+      </div>
+    </main>
+
+    <aside class="sidebar">
+      <div class="card">
+        <div class="card-header">Server Status</div>
+        <div class="card-body status-online">
+          <div class="count">42 / 200</div>
+          <div class="label">● Online</div>
+          <div class="ip" onclick="copyIP()">play.melon-mc.net</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">Top Donator</div>
+        <div class="card-body donator">
+          <div class="crown">👑</div>
+          <div class="name">PlayerName</div>
+          <div class="amount">$127.50 this month</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">Recent Purchases</div>
+        <div class="card-body">
+          <ul class="recent-list">
+            <li><span class="who">Steve</span><span class="what">Melon Rank</span></li>
+            <li><span class="who">Alex</span><span class="what">Warrior Kit</span></li>
+            <li><span class="who">Notch</span><span class="what">Diamond Bundle</span></li>
+            <li><span class="who">Herobrine</span><span class="what">Crate Keys</span></li>
+          </ul>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <footer class="footer">
+    <img src="logo.png" alt="MelonMC">
+    <div class="footer-social">
+      <a href="#"><i class="fab fa-discord"></i></a>
+      <a href="#"><i class="fab fa-twitter"></i></a>
+      <a href="#"><i class="fab fa-youtube"></i></a>
+      <a href="#"><i class="fab fa-instagram"></i></a>
+    </div>
+    <div class="footer-copy">
+      © 2026 <strong>MelonMC</strong> — All Rights Reserved
+    </div>
+  </footer>
+
+  <div class="toast" id="toast">IP copied!</div>
+
+  <script>
+    function copyIP() {
+      navigator.clipboard.writeText('play.melon-mc.net').then(() => {
+        const t = document.getElementById('toast');
+        t.textContent = 'IP copied: play.melon-mc.net';
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 2200);
+      });
+    }
+
+    function buy(name) {
+      const t = document.getElementById('toast');
+      t.textContent = name + ' — Connect payments later';
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    // Fake player count animation
+    setInterval(() => {
+      const el = document.getElementById('player-count');
+      if (el) {
+        const n = 38 + Math.floor(Math.random() * 12);
+        el.textContent = n + ' Online';
+      }
+    }, 8000);
+  </script>
+</body>
+</html>
